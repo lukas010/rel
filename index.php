@@ -1,4 +1,7 @@
 <?php
 require_once 'core/init.php';
 
-echo Config::get('mysql/host');
+$user = DB::getInstance()->update('users', 4, array(
+    'password' => 'newpassword',
+    'name' => 'Lukas Vizbaras'
+));

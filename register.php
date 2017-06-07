@@ -4,8 +4,6 @@ require_once 'core/init.php';
 
 if (Input::exists()) {
     if (Token::check(Input::get('token'))) {
-        echo "jau buvo";
-
         $validate = new Validate();
         $validation = $validate->check($_POST, array(
             'username' => array(
@@ -30,7 +28,25 @@ if (Input::exists()) {
         ));
 
         if ($validation->passed()) {
-            echo "Patvirtinta";
+            $user = new User();
+
+            $salt = Hash::salt(32);
+
+            try {
+                $user->create(array(
+                    'username' => Input::get('username'),
+                    'password' => Hash::make(Input::get('password'), $salt),
+                    'salt' => $salt,
+                    'name' => Input::get('name'),
+                    'joined' => date('Y-m-d H:i:s'),
+                    'user_group' => 1
+                ));
+
+                Session::flash('home', 'Jūs easate sėkmingai užregistruotas sistemoje.');
+                Redirect::to('index.php');
+            } catch (Exception $e) {
+                die($e->getMessage());
+            }
         } else {
             foreach ($validation->errors() as $error) {
                 echo $error, '<br>';

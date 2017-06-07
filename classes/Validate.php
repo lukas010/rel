@@ -1,5 +1,7 @@
 <?php
 
+// reiketu patikrinti ar username nesusideda vien tik is skaiciu
+
 class Validate
 {
     private $_passed = false;

@@ -1,26 +1,59 @@
 <?php
 require_once 'core/init.php';
 
-if (Session::exists('home')) {
-    echo '<p>' . Session::flash('home') . '</p>';
-}
+include 'includes/head.php';
+include 'includes/navbar.php';
 
-$user = new User();
-
+// if (Session::exists('home')) {
+//     echo '<p>' . Session::flash('home') . '</p>';
+// }
 
 if ($user->isLoggedIn()) {
-    ?>
-    <p>Sveiki, <a href="profile.php?user=<?php echo escape($user->data()->username); ?>"><?php echo escape($user->data()->username); ?></a></p>
+    if (Session::exists('msg_add') && $_SESSION['msg_add'] === 'true') {
+        Session::flash('msg_add'); ?><div class="container">
+            <div class="alert alert-success" role="alert">
+                <p>Užduotis priskirta!</p>
+            </div>
+        </div><?php
 
-    <ul>
-        <li><a href="logout.php">Atsijungti</a></li>
-        <li><a href="update.php">Atnaujinti profilį</a></li>
-        <li><a href="changepassword.php">Pakeisti slaptažodį</a></li>
-    </ul>
+    }
+    if (Session::exists('msg_update') && $_SESSION['msg_update'] === 'true') {
+        Session::flash('msg_update'); ?><div class="container">
+            <div class="alert alert-success" role="alert">
+                <p>Užduotis redaguota!</p>
+            </div>
+        </div><?php
 
-<?php
+    }
+    if (Session::exists('msg_del') && $_SESSION['msg_del'] === 'true') {
+        Session::flash('msg_del'); ?><div class="container">
+            <div class="alert alert-success" role="alert">
+                <p>Užduotis ištrinta!</p>
+            </div>
+        </div><?php
 
-    include_once 'tasks.php';
+    }
+    if (Session::exists('msg_mark') && $_SESSION['msg_mark'] === 'true') {
+        Session::flash('msg_mark'); ?><div class="container">
+            <div class="alert alert-success" role="alert">
+                <p>Užduotis pažymėta kaip įvykdyta!</p>
+            </div>
+        </div><?php
+
+    }
+
+    if (Session::exists('update_task') && $_SESSION['update_task'] === 'true') {
+        include_once 'updatetask.php';
+        Session::delete('update_task');
+    } elseif (Session::exists('delete_task') && $_SESSION['delete_task'] === 'true') {
+        include_once 'deletetask.php';
+        Session::delete('delete_task');
+    } else {
+        include_once 'showtasks.php';
+    }
 } else {
-    echo '<p>Norint matyti užduotis jums reikia <a href="login.php">prisijungti</a> arba <a href="register.php">registruotis</a>.</p>';
+    Session::delete('isLoggedIn');
+    Redirect::to('login.php');
 }
+
+include 'includes/footer.php';

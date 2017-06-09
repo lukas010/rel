@@ -23,7 +23,7 @@ class User
                 if ($this->find($user)) {
                     $this->_isLoggedIn = true;
                 } else {
-                    // logout process
+                    $this->logout();
                 }
             }
         } else {
@@ -141,6 +141,7 @@ class User
 
     public function isLoggedIn()
     {
+        Session::put('isLoggedIn', 'true');
         return $this->_isLoggedIn;
     }
 }

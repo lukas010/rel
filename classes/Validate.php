@@ -17,32 +17,37 @@ class Validate
     {
         foreach ($items as $item => $rules) {
             foreach ($rules as $rule => $rule_value) {
-                $value = trim($source[$item]);
+
+                // Patikrinimas, ar bent vienas checkbox'as perduodamas
+                if (array_key_exists($item, $source)) {
+                    $value = $source[$item];                //$value = trim($source[$item]); ?
+                }
+
                 $item = escape($item);
 
                 if ($rule === 'required' && empty($value)) {
-                    $this->addError("{$item} privalomas");
+                    $this->addError("{$item} required");
                 } elseif (!empty($value)) {
                     switch ($rule) {
                         case 'min':
                             if (strlen($value) < $rule_value) {
-                                $this->addError("{$item} turi būti ilgesnis nei {$rule_value} simboliai.");
+                                $this->addError("{$item} > {$rule_value}");
                             }
                         break;
                         case 'max':
                             if (strlen($value) > $rule_value) {
-                                $this->addError("{$item} turi būti trumpesnis nei {$rule_value} simboliai.");
+                                $this->addError("{$item} < {$rule_value}");
                             }
                         break;
                         case 'matches':
                             if ($value != $source[$rule_value]) {
-                                $this->addError("{$rule_value} turi sutapti su {$item}.");
+                                $this->addError("{$rule_value} = {$item}");
                             }
                         break;
                         case 'unique':
                             $check = $this->_db->get($rule_value, array('username', '=', $value));
                             if ($check->count()) {
-                                $this->addError("{$item} jau egzistuoja.");
+                                $this->addError("{$item} exists");
                             }
                         break;
                     }

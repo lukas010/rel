@@ -78,9 +78,16 @@ class DB
         return $this->action('SELECT *', $table, $where);
     }
 
-    public function delete($table, $where)
+    public function delete($table, $where, $manual = false)
     {
-        return $this->action('DELETE', $table, $where);
+        if ($manual) {
+            $sql = "DELETE FROM {$table} WHERE {$where}";
+            if (!$this->query($sql)->error()) {
+                return $this;
+            }
+        } else {
+            return $this->action('DELETE', $table, $where);
+        }
     }
 
     public function insert($table, $fields = array())

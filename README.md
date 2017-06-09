@@ -1,3 +1,3 @@
-#Relative Works
-##Praktikos užduotis
-###Lukas Vizbaras 2017
+# Relative Works
+## Praktikos užduotis
+### Lukas Vizbaras, 2017
